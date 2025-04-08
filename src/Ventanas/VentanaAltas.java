@@ -1,4 +1,7 @@
 package Ventanas;
+import Elementos.Elementos;
+import controlador.AlumnoDAO;
+import modelo.Alumno;
 import modelo.ResultSetTableModel;
 
 import java.awt.*;
@@ -7,13 +10,15 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import javax.swing.*;
 
-public class VentanaAltas extends JFrame implements ActionListener {
+public class VentanaAltas extends Elementos implements ActionListener {
 
     JButton btnAgregar, btnBorrar, btnCancelar;
 
     JTextField cajaNumControl, cajaNombre, cajaApePat, cajApeMat;
 
     JComboBox<String> comboSemestre, comboCarrera;
+
+    JTable tabla;
 
     public VentanaAltas() {
 
@@ -117,13 +122,19 @@ public class VentanaAltas extends JFrame implements ActionListener {
 
         btnAgregar = new JButton("Agregar");
 
+        btnAgregar.addActionListener(this);
+
         asignarPosicion(btnAgregar, 380, 115, 80, 20);
 
         btnBorrar = new JButton("Borrar");
 
+        btnBorrar.addActionListener(this);
+
         asignarPosicion(btnBorrar, 380, 175, 80, 20);
 
         btnCancelar = new JButton("Cancelar");
+
+        btnCancelar.addActionListener(this);
 
         asignarPosicion(btnCancelar, 380, 235, 90, 20);
 
@@ -131,7 +142,7 @@ public class VentanaAltas extends JFrame implements ActionListener {
 
         String[] columnNames = {"NO DE CONTROL", "NOMBRE", "AP. PATERNO", "AP. MATERNO", "SEMESTRE", "CARRERA"};
 
-        JTable tabla = new JTable(rowData, columnNames);
+        tabla = new JTable(rowData, columnNames);
 
         JScrollPane scrollPane = new JScrollPane(tabla);
 
@@ -145,40 +156,47 @@ public class VentanaAltas extends JFrame implements ActionListener {
 
     }
 
-    public void asignarPosicion(JComponent componente, int x, int y, int w, int h){
-
-        componente.setBounds(x, y, w, h);
-
-        add(componente);
-
-    }
-
-    public void actualizarTabla(JTable tabla) {
-
-        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
-
-        final String URL = "jdbc:mysql://localhost:3306/bd_Topicos_2025";
-
-        final String CONSULTA = "SELECT * FROM Alumnos";
-
-        try {
-            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
-
-            tabla.setModel(modelo);
-
-        } catch (SQLException e) {
-
-            throw new RuntimeException(e);
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-
-        }
-
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        Object componente = e.getSource();
+
+        if(componente == btnAgregar){
+
+            Alumno a = new Alumno(cajaNumControl.getText(),cajaNombre.getText(),cajaApePat.getText(),cajApeMat.getText(),(byte)0, Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())),String.valueOf(comboCarrera.getSelectedItem()));
+
+
+
+            if(alumnoDAO.agregarAlumno(a) == true){
+
+                actualizarTabla(tabla);
+
+                JOptionPane.showMessageDialog(this, "Registro agregado correctamente");
+
+                System.out.println("Registro agregado correctamente");
+
+            }else{
+
+                JOptionPane.showMessageDialog(this, "Error en la Insercción");
+
+                System.out.println("Error en la Insercción");
+
+            }
+
+        }
+
+        if(componente == btnBorrar){
+
+            restablecer(cajaNumControl, cajaNombre, cajaApePat, cajApeMat, comboSemestre, comboCarrera);
+
+        }
+
+        if(componente == btnCancelar){
+
+
+
+        }
 
     }
 }

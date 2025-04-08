@@ -228,35 +228,13 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
 
     public static void main(String[] args) {
 
-        //Proceso altas
-
-        Alumno a = new Alumno("3","3","3","3",(byte)3,(byte)3,"3");
-
         AlumnoDAO alumnoDAO = new AlumnoDAO();
 
-        if(alumnoDAO.agregarAlumno(a) == true){
-
-            System.out.println("Registro agregado correctamente");
-
-        }else{
-
-            System.out.println("Error en la Insercción");
-
-        }
 
         //============ Prueba bajas ==========
 
 
 
-        if(alumnoDAO.eliminarAlumno("1") == true){
-
-            System.out.println("Registro Modificado correctamente");
-
-        }else{
-
-            System.out.println("Error en la Modificacion");
-
-        }
 
         //============ Prueba Combios ==========
 

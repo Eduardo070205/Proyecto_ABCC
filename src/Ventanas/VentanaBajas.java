@@ -1,12 +1,18 @@
 package Ventanas;
 
+import ConexionBD.ConexionBD;
+import Elementos.Elementos;
+import modelo.Alumno;
 import modelo.ResultSetTableModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class VentanaBajas extends JFrame{
+public class VentanaBajas extends Elementos implements ActionListener {
 
     JButton btnEliminar, btnBorrar, btnCancelar, btnLogo;
 
@@ -14,7 +20,7 @@ public class VentanaBajas extends JFrame{
 
     JComboBox<String> comboSemestre, comboCarrera;
 
-
+    JTable tabla;
 
     public VentanaBajas() {
 
@@ -64,9 +70,13 @@ public class VentanaBajas extends JFrame{
 
         btnLogo = new JButton(iconoAjustado);
 
+        btnLogo.addActionListener(this);
+
         asignarPosicion(btnLogo, 270, 80, 90, 35);
 
         btnBorrar = new JButton("Borrar");
+
+        btnBorrar.addActionListener(this);
 
         asignarPosicion(btnBorrar, 380, 90, 80, 20);
 
@@ -139,6 +149,8 @@ public class VentanaBajas extends JFrame{
 
         btnEliminar = new JButton("Eliminar");
 
+        btnEliminar.addActionListener(this);
+
         asignarPosicion(btnEliminar, 380, 175, 90, 20);
 
         btnCancelar = new JButton("Cancelar");
@@ -149,7 +161,7 @@ public class VentanaBajas extends JFrame{
 
         String[] columnNames = {"NO DE CONTROL", "NOMBRE", "AP. PATERNO", "AP. MATERNO", "SEMESTRE", "CARRERA"};
 
-        JTable tabla = new JTable(rowData, columnNames);
+        tabla = new JTable(rowData, columnNames);
 
         JScrollPane scrollPane = new JScrollPane(tabla);
 
@@ -159,35 +171,80 @@ public class VentanaBajas extends JFrame{
 
         add(scrollPane);
 
-    }
-
-    public void asignarPosicion(JComponent componente, int x, int y, int w, int h){
-
-        componente.setBounds(x, y, w, h);
-
-        add(componente);
+        actualizarTabla(tabla);
 
     }
 
-    public void actualizarTabla(JTable tabla){
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
+        Object componente = e.getSource();
 
-        final String URL = "jdbc:mysql://localhost:3306/bd_Topicos_2025";
+        if(componente == btnLogo){
 
-        final String CONSULTA = "SELECT * FROM Alumnos";
+            obtnerDatos();
+
+        }
+
+        if(componente == btnEliminar){
+
+
+            if(alumnoDAO.eliminarAlumno(cajaNumControl.getText()) == true){
+
+                actualizarTabla(tabla);
+
+                System.out.println("Registro Modificado correctamente");
+
+                JOptionPane.showMessageDialog(this, "Registro eliminado con exito");
+
+            }else{
+
+                System.out.println("Error en la Modificacion");
+
+                JOptionPane.showMessageDialog(this, "El registro no se pudo eliminar");
+
+            }
+
+        }
+
+        if(componente == btnBorrar){
+
+            restablecer(cajaNumControl,cajaNombre, cajaApePat, cajApeMat, comboCarrera, comboSemestre);
+
+        }
+
+    }
+
+    public void obtnerDatos() {
+
+        ConexionBD conexionBD = new ConexionBD();
+
+        String sql = "SELECT * FROM Alumnos WHERE Nun_Control='"+cajaNumControl.getText()+"'";
+
+        ResultSet rs = conexionBD.ejecutarIstruccionSQL(sql);
 
         try {
-            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
 
-            tabla.setModel(modelo);
+            rs.next();
+
+            cajaNombre.setText(rs.getString("Nombre"));
+
+            cajaApePat.setText(rs.getString(3));
+
+            cajApeMat.setText(rs.getString("Segundo_Ap"));
+
+            // byte e = rs.getByte(5);
+
+            comboSemestre.setSelectedItem(String.valueOf(rs.getByte(6)));
+
+            comboCarrera.setSelectedItem(rs.getString(7));
 
         } catch (SQLException e) {
+            e.printStackTrace();
 
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(this,"El registro no fue encontrado");
 
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            restablecer(cajaNombre, cajaApePat, cajApeMat, comboCarrera, comboSemestre);
 
         }
 

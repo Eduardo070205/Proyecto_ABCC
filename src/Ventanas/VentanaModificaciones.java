@@ -1,9 +1,17 @@
 package Ventanas;
 
+import ConexionBD.ConexionBD;
+import Elementos.Elementos;
+import modelo.Alumno;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class VentanaModificaciones extends JFrame{
+public class VentanaModificaciones extends Elementos implements ActionListener {
 
 
     JButton btnGuardar, btnBorrar, btnCancelar, btnLogo;
@@ -11,6 +19,8 @@ public class VentanaModificaciones extends JFrame{
     JTextField cajaNumControl, cajaNombre, cajaApePat, cajApeMat;
 
     JComboBox<String> comboSemestre, comboCarrera;
+
+    JTable tabla;
 
     public VentanaModificaciones() {
 
@@ -59,6 +69,8 @@ public class VentanaModificaciones extends JFrame{
         ImageIcon iconoAjustado = new ImageIcon(imagenAjustada);
 
         btnLogo = new JButton(iconoAjustado);
+
+        btnLogo.addActionListener(this);
 
         asignarPosicion(btnLogo, 270, 80, 90, 35);
 
@@ -125,6 +137,8 @@ public class VentanaModificaciones extends JFrame{
 
         btnGuardar = new JButton("Guardar Cambios");
 
+        btnGuardar.addActionListener(this);
+
         asignarPosicion(btnGuardar, 380, 175, 140, 20);
 
         btnCancelar = new JButton("Cancelar");
@@ -135,7 +149,7 @@ public class VentanaModificaciones extends JFrame{
 
         String[] columnNames = {"NO DE CONTROL", "NOMBRE", "AP. PATERNO", "AP. MATERNO", "SEMESTRE", "CARRERA"};
 
-        JTable tabla = new JTable(rowData, columnNames);
+        tabla = new JTable(rowData, columnNames);
 
         JScrollPane scrollPane = new JScrollPane(tabla);
 
@@ -144,6 +158,8 @@ public class VentanaModificaciones extends JFrame{
         scrollPane.setBounds(10, 280, 580, 200);
 
         add(scrollPane);
+
+        actualizarTabla(tabla);
 
     }
 
@@ -155,5 +171,76 @@ public class VentanaModificaciones extends JFrame{
 
     }
 
+
+
+    public void obtnerDatos() {
+
+        ConexionBD conexionBD = new ConexionBD();
+
+        String sql = "SELECT * FROM Alumnos WHERE Nun_Control='"+cajaNumControl.getText()+"'";
+
+        ResultSet rs = conexionBD.ejecutarIstruccionSQL(sql);
+
+        try {
+
+            rs.next();
+
+            cajaNombre.setText(rs.getString("Nombre"));
+
+            cajaApePat.setText(rs.getString(3));
+
+            cajApeMat.setText(rs.getString("Segundo_Ap"));
+
+            // byte e = rs.getByte(5);
+
+            comboSemestre.setSelectedItem(String.valueOf(rs.getByte(6)));
+
+            comboCarrera.setSelectedItem(rs.getString(7));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(this,"El registro no fue encontrado");
+
+            restablecer(cajaNombre, cajaApePat, cajApeMat, comboCarrera, comboSemestre);
+
+        }
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        Object componente = e.getSource();
+
+        if(componente == btnLogo){
+
+            obtnerDatos();
+
+        }
+
+        if(componente == btnGuardar){
+
+            Alumno a1 = new Alumno(cajaNumControl.getText(),cajaNombre.getText(),cajaApePat.getText(),cajApeMat.getText(),(byte)0, Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())),String.valueOf(comboCarrera.getSelectedItem()));
+
+            if(alumnoDAO.editarAlumno(a1) == true){
+
+                actualizarTabla(tabla);
+
+                System.out.println("Registro Modificado correctamente");
+
+                JOptionPane.showMessageDialog(this, "Se ha actualizado el registro correctamente");
+
+            }else{
+
+                System.out.println("Error en la Modificacion");
+
+                JOptionPane.showMessageDialog(this, "Ocurrio un error en la actualización del registro");
+
+            }
+
+        }
+
+    }
 }
 
