@@ -1,11 +1,17 @@
 package Ventanas;
 
+
+import Elementos.Elementos;
+import modelo.ResultSetTableModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class VentanaConsultas extends JFrame implements ActionListener {
+import java.sql.SQLException;
+
+public class VentanaConsultas extends Elementos implements ActionListener {
 
     JRadioButton radioTodos, radioNombre, radioApePat, radioApeMat, radioSemestre, radioCarrera;
 
@@ -15,8 +21,14 @@ public class VentanaConsultas extends JFrame implements ActionListener {
 
     JComboBox<String> comboSemestre, comboCarrera;
 
+    JTable tabla;
+
+    ButtonGroup bg;
+
 
     public VentanaConsultas() {
+
+        bg = new ButtonGroup();
 
         getContentPane().setLayout(null);
 
@@ -50,6 +62,10 @@ public class VentanaConsultas extends JFrame implements ActionListener {
 
         radioTodos = new JRadioButton("Todos");
 
+        radioTodos.setSelected(true);
+
+        bg.add(radioTodos);
+
         radioTodos.addActionListener(this);
 
         asignarPosicion(radioTodos, 10, 100, 100,20);
@@ -66,6 +82,8 @@ public class VentanaConsultas extends JFrame implements ActionListener {
 
         btnLogo = new JButton(iconoAjustado);
 
+        btnLogo.addActionListener(this);
+
         asignarPosicion(btnLogo, 380, 140, 90, 35);
 
         btnBorrar = new JButton("Borrar");
@@ -73,6 +91,8 @@ public class VentanaConsultas extends JFrame implements ActionListener {
         asignarPosicion(btnBorrar, 380, 200, 80, 20);
 
         radioNombre = new JRadioButton("Nombre");
+
+        bg.add(radioNombre);
 
         radioNombre.addActionListener(this);
 
@@ -86,6 +106,8 @@ public class VentanaConsultas extends JFrame implements ActionListener {
 
         radioApePat = new JRadioButton("Apellido Paterno");
 
+        bg.add(radioApePat);
+
         radioApePat.addActionListener(this);
 
         asignarPosicion(radioApePat, 20, 160, 120,20);
@@ -98,6 +120,8 @@ public class VentanaConsultas extends JFrame implements ActionListener {
 
         radioApeMat = new JRadioButton("Apellido Materno");
 
+        bg.add(radioApeMat);
+
         radioApeMat.addActionListener(this);
 
         asignarPosicion(radioApeMat, 20, 190, 120,20);
@@ -109,6 +133,8 @@ public class VentanaConsultas extends JFrame implements ActionListener {
         asignarPosicion(cajApeMat, 160, 190, 200,20);
 
         radioSemestre = new JRadioButton("Semestre");
+
+        bg.add(radioSemestre);
 
         radioSemestre.addActionListener(this);
 
@@ -128,6 +154,8 @@ public class VentanaConsultas extends JFrame implements ActionListener {
         asignarPosicion(comboSemestre, 160, 220, 150, 20);
 
         radioCarrera = new JRadioButton("Carrera");
+
+        bg.add(radioCarrera);
 
         radioCarrera.addActionListener(this);
 
@@ -158,7 +186,7 @@ public class VentanaConsultas extends JFrame implements ActionListener {
 
         String[] columnNames = {"NO DE CONTROL", "NOMBRE", "AP. PATERNO", "AP. MATERNO", "SEMESTRE", "CARRERA"};
 
-        JTable tabla = new JTable(rowData, columnNames);
+        tabla = new JTable(rowData, columnNames);
 
         JScrollPane scrollPane = new JScrollPane(tabla);
 
@@ -167,6 +195,8 @@ public class VentanaConsultas extends JFrame implements ActionListener {
         scrollPane.setBounds(10, 280, 580, 200);
 
         add(scrollPane);
+
+        actualizarTabla(tabla);
 
     }
 
@@ -179,81 +209,74 @@ public class VentanaConsultas extends JFrame implements ActionListener {
     }
 
 
+    public void actualizarTablaFiltro(JTable tabla) {
 
+        final String CONTROLADOR_JDBC = "com.mysql.cj.jdbc.Driver";
 
+        final String URL = "jdbc:mysql://localhost:3306/bd_Topicos_2025";
 
+        String CONSULTA = "SELECT * FROM Alumnos";
+
+        if(radioNombre.isSelected()){
+
+            CONSULTA = "SELECT * FROM Alumnos WHERE Nombre='"+cajaNombre.getText()+"'";
+
+        }
+
+        if(radioApePat.isSelected()){
+
+            CONSULTA = "SELECT * FROM Alumnos WHERE Primer_Ap='"+cajaApePat.getText()+"'";
+
+        }
+
+        if(radioApeMat.isSelected()){
+
+            CONSULTA = "SELECT * FROM Alumnos WHERE Segundo_Ap='"+cajApeMat.getText()+"'";
+
+        }
+
+        if(radioSemestre.isSelected()){
+
+            CONSULTA = "SELECT * FROM Alumnos WHERE Semestre="+comboSemestre.getSelectedItem()+"";
+
+        }
+
+        if(radioCarrera.isSelected()){
+
+            CONSULTA = "SELECT * FROM Alumnos WHERE Carrera='"+comboCarrera.getSelectedItem()+"'";
+
+        }
+
+        try {
+            ResultSetTableModel modelo = new ResultSetTableModel(CONTROLADOR_JDBC, URL, CONSULTA);
+
+            tabla.setModel(modelo);
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+
+        } catch (ClassNotFoundException e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
         Object componente = e.getSource();
 
+        if(componente == btnLogo){
+
+            actualizarTablaFiltro(tabla);
+
+        }
+
         if (componente == radioTodos){
 
-            if(radioTodos.isSelected()){
-
-                radioNombre.setSelected(true);
-
-                radioNombre.setEnabled(false);
-
-                cajaNombre.setEnabled(true);
-
-                radioApePat.setSelected(true);
-
-                radioApePat.setEnabled(false);
-
-                cajaApePat.setEnabled(true);
-
-                radioApeMat.setSelected(true);
-
-                radioApeMat.setEnabled(false);
-
-                cajApeMat.setEnabled(true);
-
-                radioSemestre.setSelected(true);
-
-                radioSemestre.setEnabled(false);
-
-                comboSemestre.setEnabled(true);
-
-                radioCarrera.setSelected(true);
-
-                radioCarrera.setEnabled(false);
-
-                comboCarrera.setEnabled(true);
-
-            }else{
-
-                radioNombre.setSelected(false);
-
-                radioNombre.setEnabled(true);
-
-                cajaNombre.setEnabled(false);
-
-                radioApePat.setSelected(false);
-
-                radioApePat.setEnabled(true);
-
-                cajaApePat.setEnabled(false);
-
-                radioApeMat.setSelected(false);
-
-                radioApeMat.setEnabled(true);
-
-                cajApeMat.setEnabled(false);
-
-                radioSemestre.setSelected(false);
-
-                radioSemestre.setEnabled(true);
-
-                comboSemestre.setEnabled(false);
-
-                radioCarrera.setSelected(false);
-
-                radioCarrera.setEnabled(true);
-
-                comboCarrera.setEnabled(false);
-
-            }
+            actualizarTablaFiltro(tabla);
 
         }
 

@@ -145,7 +145,7 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
 
         asignarPosicion(btnCancelar, 380, 235, 90, 20);
 
-        String[][] rowData = {{"1","1","1","1","1","1"}};
+        String[][] rowData = null;
 
         String[] columnNames = {"NO DE CONTROL", "NOMBRE", "AP. PATERNO", "AP. MATERNO", "SEMESTRE", "CARRERA"};
 
@@ -238,6 +238,12 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Ocurrio un error en la actualización del registro");
 
             }
+
+        }
+
+        if(componente == btnBorrar){
+
+            restablecer(cajaNumControl,cajaNombre, cajaApePat, cajApeMat, comboCarrera, comboSemestre);
 
         }
 

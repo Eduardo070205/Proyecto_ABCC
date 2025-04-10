@@ -2,6 +2,7 @@ package Ventanas;
 
 import ConexionBD.ConexionBD;
 import Elementos.Elementos;
+import controlador.AlumnoDAO;
 import modelo.Alumno;
 import modelo.ResultSetTableModel;
 
@@ -173,6 +174,7 @@ public class VentanaBajas extends Elementos implements ActionListener {
 
         actualizarTabla(tabla);
 
+
     }
 
     @Override
@@ -183,6 +185,9 @@ public class VentanaBajas extends Elementos implements ActionListener {
         if(componente == btnLogo){
 
             obtnerDatos();
+
+            //cajaNombre.setText(alumnoDAO.mostrarAlumno(cajaNumControl.getText()).getNombre());
+
 
         }
 

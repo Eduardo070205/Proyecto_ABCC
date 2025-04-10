@@ -3,6 +3,7 @@ package controlador;
 import ConexionBD.ConexionBD;
 import modelo.Alumno;
 
+import javax.swing.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -53,7 +54,47 @@ public class AlumnoDAO {
 
     public Alumno mostrarAlumno(String filtro){
 
-        return null;
+
+
+        String sql = "SELECT * FROM Alumnos WHERE Nun_Control='"+filtro+"'";
+
+        ResultSet rs = conexionBD.ejecutarIstruccionSQL(sql);
+
+        Alumno a = null;
+
+        try {
+
+            if(rs.next()){
+
+                String nc = rs.getString(1);
+
+                String n =  rs.getString("Nombre");
+
+                String pa = rs.getString(3);
+
+                String sa = rs.getString("Segundo_Ap");
+
+                byte e = rs.getByte(5);
+
+                byte s = rs.getByte(6);
+
+                String c = rs.getString(7);
+
+                a = new Alumno(nc, n, pa, sa, e, s, c);
+
+            }else{
+
+                JOptionPane.showMessageDialog(null, "No se encontro el alumno");
+
+                System.out.println("No se encontro el registro");
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return a;
 
     }
 
@@ -62,6 +103,8 @@ public class AlumnoDAO {
         ArrayList<Alumno> listaALumnos = new ArrayList<>();
 
         String sql = "SELECT * FROM Alumnos";
+
+        //String sql4 = "SELECT * FROM Alumnos WHERE Semestre="+filtro+"";
 
         ResultSet rs = conexionBD.ejecutarIstruccionSQL(sql);
 
