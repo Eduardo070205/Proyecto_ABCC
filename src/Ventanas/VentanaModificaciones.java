@@ -8,10 +8,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class VentanaModificaciones extends Elementos implements ActionListener {
+public class VentanaModificaciones extends Elementos implements ActionListener, KeyListener {
 
 
     JButton btnGuardar, btnBorrar, btnCancelar, btnLogo;
@@ -60,6 +62,8 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
 
         cajaNumControl = new JTextField();
 
+        cajaNumControl.addKeyListener(this);
+
         asignarPosicion(cajaNumControl, 160, 90, 100, 20);
 
         ImageIcon icono = new ImageIcon("./img/search.png");
@@ -84,6 +88,8 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
 
         cajaNombre = new JTextField();
 
+        cajaNombre.addKeyListener(this);
+
         asignarPosicion(cajaNombre, 160, 130, 200, 20);
 
         JLabel txtApePat = new JLabel("Apellido Paterno");
@@ -92,6 +98,8 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
 
         cajaApePat = new JTextField();
 
+        cajaApePat.addKeyListener(this);
+
         asignarPosicion(cajaApePat, 160, 160, 200, 20);
 
         JLabel txtApeMat = new JLabel("Apellido Materno");
@@ -99,6 +107,8 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
         asignarPosicion(txtApeMat, 30, 190, 120, 20);
 
         cajApeMat = new JTextField();
+
+        cajApeMat.addKeyListener(this);
 
         asignarPosicion(cajApeMat, 160, 190, 200,20);
 
@@ -142,6 +152,8 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
         asignarPosicion(btnGuardar, 380, 175, 140, 20);
 
         btnCancelar = new JButton("Cancelar");
+
+        btnCancelar.addActionListener(this);
 
         asignarPosicion(btnCancelar, 380, 235, 90, 20);
 
@@ -221,21 +233,35 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
 
         if(componente == btnGuardar){
 
-            Alumno a1 = new Alumno(cajaNumControl.getText(),cajaNombre.getText(),cajaApePat.getText(),cajApeMat.getText(),(byte)0, Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())),String.valueOf(comboCarrera.getSelectedItem()));
+            if(validacion(cajaNombre, cajaApePat, cajApeMat)){
 
-            if(alumnoDAO.editarAlumno(a1) == true){
+                int respuesta = JOptionPane.showConfirmDialog(this, "¿Quieres guardar los cambios?");
 
-                actualizarTabla(tabla);
+                if(respuesta == JOptionPane.YES_OPTION){
 
-                System.out.println("Registro Modificado correctamente");
+                    Alumno a1 = new Alumno(cajaNumControl.getText(),cajaNombre.getText(),cajaApePat.getText(),cajApeMat.getText(),(byte)0, Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())),String.valueOf(comboCarrera.getSelectedItem()));
 
-                JOptionPane.showMessageDialog(this, "Se ha actualizado el registro correctamente");
+                    if(alumnoDAO.editarAlumno(a1) == true){
+
+                        actualizarTabla(tabla);
+
+                        System.out.println("Registro Modificado correctamente");
+
+                        JOptionPane.showMessageDialog(this, "Se ha actualizado el registro correctamente");
+
+                    }else{
+
+                        System.out.println("Error en la Modificacion");
+
+                        JOptionPane.showMessageDialog(this, "Ocurrio un error en la actualización del registro");
+
+                    }
+
+                }
 
             }else{
 
-                System.out.println("Error en la Modificacion");
-
-                JOptionPane.showMessageDialog(this, "Ocurrio un error en la actualización del registro");
+                JOptionPane.showMessageDialog(this, "Los datos son incorrectos, verificalos");
 
             }
 
@@ -244,6 +270,87 @@ public class VentanaModificaciones extends Elementos implements ActionListener {
         if(componente == btnBorrar){
 
             restablecer(cajaNumControl,cajaNombre, cajaApePat, cajApeMat, comboCarrera, comboSemestre);
+
+        }
+
+        if(componente == btnCancelar){
+
+            int respuesta = JOptionPane.showConfirmDialog(this, "¿Quieres salir?, si no has guardado los cambios se perderan");
+
+            if(respuesta == JOptionPane.YES_OPTION){
+
+                this.dispose();
+
+            }
+
+        }
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+        if(e.getSource() == cajaNumControl){
+
+            if((e.getKeyCode() >= 48 && e.getKeyCode() <= 57) || e.getKeyCode() == 8 || e.getKeyCode() == 20 || e.getKeyCode() == 16 || e.getKeyCode() == 17 || e.getKeyCode() == 18){
+
+
+            }else{
+
+                JOptionPane.showMessageDialog(this, "Solo puedes ingresar numeros");
+
+                cajaNumControl.setText("");
+
+            }
+
+        }
+
+        if(e.getSource() == cajaNombre || e.getSource() == cajaApePat || e.getSource() == cajApeMat){
+
+            if(e.getKeyCode() == 32 && cajaNombre.getText() == ""){
+
+
+
+            }
+
+
+            if((e.getKeyCode() >= 65 && e.getKeyCode() <= 90) || (e.getKeyCode() >= 97 && e.getKeyCode() <= 122) || e.getKeyCode() == 32 || e.getKeyCode() == 8 || e.getKeyCode() == 20 || e.getKeyCode() == 16 || e.getKeyCode() == 17 || e.getKeyCode() == 18){
+
+
+
+            }else{
+
+                JOptionPane.showMessageDialog(this, "Solo puedes ingresar letras: " + e.getKeyCode());
+
+                if(e.getSource() == cajaNombre){
+
+                    cajaNombre.setText("");
+
+                }
+
+                if(e.getSource() == cajaApePat){
+
+                    cajaApePat.setText("");
+
+                }
+
+                if(e.getSource() == cajApeMat){
+
+                    cajApeMat.setText("");
+
+                }
+
+            }
 
         }
 

@@ -5,12 +5,11 @@ import modelo.Alumno;
 import modelo.ResultSetTableModel;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.sql.SQLException;
 import javax.swing.*;
 
-public class VentanaAltas extends Elementos implements ActionListener {
+public class VentanaAltas extends Elementos implements ActionListener, KeyListener {
 
     JButton btnAgregar, btnBorrar, btnCancelar;
 
@@ -58,6 +57,8 @@ public class VentanaAltas extends Elementos implements ActionListener {
 
         cajaNumControl = new JTextField();
 
+        cajaNumControl.addKeyListener(this);
+
         asignarPosicion(cajaNumControl, 160, 100, 200, 20);
 
         JLabel txtNombre = new JLabel("Nombre");
@@ -65,6 +66,8 @@ public class VentanaAltas extends Elementos implements ActionListener {
         asignarPosicion(txtNombre, 30, 130, 120, 20);
 
         cajaNombre = new JTextField();
+
+        cajaNombre.addKeyListener(this);
 
         asignarPosicion(cajaNombre, 160, 130, 200, 20);
 
@@ -74,6 +77,8 @@ public class VentanaAltas extends Elementos implements ActionListener {
 
         cajaApePat = new JTextField();
 
+        cajaApePat.addKeyListener(this);
+
         asignarPosicion(cajaApePat, 160, 160, 200, 20);
 
         JLabel txtApeMat = new JLabel("Apellido Materno");
@@ -81,6 +86,8 @@ public class VentanaAltas extends Elementos implements ActionListener {
         asignarPosicion(txtApeMat, 30, 190, 120, 20);
 
         cajApeMat = new JTextField();
+
+        cajApeMat.addKeyListener(this);
 
         asignarPosicion(cajApeMat, 160, 190, 200,20);
 
@@ -157,6 +164,7 @@ public class VentanaAltas extends Elementos implements ActionListener {
     }
 
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -164,23 +172,32 @@ public class VentanaAltas extends Elementos implements ActionListener {
 
         if(componente == btnAgregar){
 
-            Alumno a = new Alumno(cajaNumControl.getText(),cajaNombre.getText(),cajaApePat.getText(),cajApeMat.getText(),(byte)0, Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())),String.valueOf(comboCarrera.getSelectedItem()));
+
+            if(validacion(cajaNumControl, cajaNombre, cajaApePat, cajApeMat, comboSemestre, comboCarrera)){
 
 
 
-            if(alumnoDAO.agregarAlumno(a) == true){
+                Alumno a = new Alumno(cajaNumControl.getText(),cajaNombre.getText(),cajaApePat.getText(),cajApeMat.getText(),(byte)0, Byte.parseByte(String.valueOf(comboSemestre.getSelectedItem())),String.valueOf(comboCarrera.getSelectedItem()));
 
-                actualizarTabla(tabla);
+                if(alumnoDAO.agregarAlumno(a) == true){
 
-                JOptionPane.showMessageDialog(this, "Registro agregado correctamente");
+                    actualizarTabla(tabla);
 
-                System.out.println("Registro agregado correctamente");
+                    JOptionPane.showMessageDialog(this, "Registro agregado correctamente");
+
+                    System.out.println("Registro agregado correctamente");
+
+                }else{
+
+                    JOptionPane.showMessageDialog(this, "Error en la Insercción");
+
+                    System.out.println("Error en la Insercción");
+
+                }
 
             }else{
 
-                JOptionPane.showMessageDialog(this, "Error en la Insercción");
-
-                System.out.println("Error en la Insercción");
+                JOptionPane.showMessageDialog(this, "Tus datos no son correctos, verificalos");
 
             }
 
@@ -194,7 +211,85 @@ public class VentanaAltas extends Elementos implements ActionListener {
 
         if(componente == btnCancelar){
 
+            int respuesta = JOptionPane.showConfirmDialog(this, "¿Quieres Salir sin guardar el registro?");
 
+            if(respuesta == JOptionPane.YES_OPTION){
+
+                this.dispose();
+
+            }
+
+        }
+
+    }
+
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+        if(e.getSource() == cajaNumControl){
+
+            if((e.getKeyCode() >= 48 && e.getKeyCode() <= 57) || e.getKeyCode() == 8 || e.getKeyCode() == 20 || e.getKeyCode() == 16 || e.getKeyCode() == 17 || e.getKeyCode() == 18){
+
+
+
+
+            }else{
+
+                JOptionPane.showMessageDialog(this, "Solo puedes ingresar numeros");
+
+                cajaNumControl.setText("");
+
+            }
+
+        }
+
+        if(e.getSource() == cajaNombre || e.getSource() == cajaApePat || e.getSource() == cajApeMat){
+
+            if(e.getKeyCode() == 32 && cajaNombre.getText() == ""){
+
+
+
+            }
+
+
+            if((e.getKeyCode() >= 65 && e.getKeyCode() <= 90) || (e.getKeyCode() >= 97 && e.getKeyCode() <= 122) || e.getKeyCode() == 32 || e.getKeyCode() == 8 || e.getKeyCode() == 20 || e.getKeyCode() == 16 || e.getKeyCode() == 17 || e.getKeyCode() == 18){
+
+
+
+            }else{
+
+                JOptionPane.showMessageDialog(this, "Solo puedes ingresar letras: " + e.getKeyCode());
+
+                if(e.getSource() == cajaNombre){
+
+                    cajaNombre.setText("");
+
+                }
+
+                if(e.getSource() == cajaApePat){
+
+                    cajaApePat.setText("");
+
+                }
+
+                if(e.getSource() == cajApeMat){
+
+                    cajApeMat.setText("");
+
+                }
+
+            }
 
         }
 

@@ -24,7 +24,6 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
 
     JMenuItem altas, bajas, cambios, consultas;
 
-    JInternalFrame IF_Altas;
 
     public VentanaInicio() {
 
@@ -93,75 +92,6 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
 
 
 
-        //--------------IternalFrames-------------
-
-
-        JDesktopPane deskTopPane = new JDesktopPane();
-
-        IF_Altas =  new JInternalFrame();
-
-        IF_Altas.setSize(500, 200);
-
-        //IF_Altas.setVisible(true);
-
-        IF_Altas.setClosable(true);
-
-        IF_Altas.setMaximizable(true);
-
-        IF_Altas.setClosable(true);
-
-        IF_Altas.setMaximizable(true);
-
-        IF_Altas.setIconifiable(true);
-
-        IF_Altas.setResizable(true);
-
-        IF_Altas.setDefaultCloseOperation(HIDE_ON_CLOSE);
-
-        IF_Altas.getContentPane().setLayout(new FlowLayout());
-
-        JPanel panel1 = new JPanel();
-
-        panel1.setLayout(new FlowLayout());
-
-        panel1.setBackground(Color.CYAN);
-
-        panel1.add(new JLabel("-------- Datos personales --------"));
-
-        panel1.add(new JLabel("-------- Nombre --------"));
-
-        panel1.add(new JTextField(5));
-
-        IF_Altas.add(panel1, BorderLayout.NORTH);
-
-
-        JPanel panel2 = new JPanel();
-
-        panel2.setLayout(new FlowLayout());
-
-        panel2.setBackground(Color.GREEN);
-
-        panel2.add(new JLabel("-------- Datos Academicos--------"));
-
-        panel2.add(new JLabel("-------- Numero de control --------"));
-
-        panel2.add(new JTextField(5));
-
-        String[][] rowData = {{"23", "Pepe", "Perez", "19", "ISC"},{"23", "Pepe", "Perez", "19", "ISC"},{"23", "Pepe", "Perez", "19", "ISC"},{"23", "Pepe", "Perez", "19", "ISC"}};
-
-        String[] columnNames = {"num, control" , "nombre", "Primer ape", "Edad", "Carrera"};
-
-        JTable tabla = new JTable(rowData, columnNames);
-
-        panel2.add(tabla);
-
-        IF_Altas.add(panel2, BorderLayout.CENTER);
-
-        IF_Altas.add(new JButton("Guardadr"), BorderLayout.SOUTH);
-
-        deskTopPane.add(IF_Altas);
-
-        add(deskTopPane, BorderLayout.CENTER);
 
     }
 
@@ -227,38 +157,6 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
     }
 
     public static void main(String[] args) {
-
-        AlumnoDAO alumnoDAO = new AlumnoDAO();
-
-
-        //============ Prueba bajas ==========
-
-
-
-
-        //============ Prueba Combios ==========
-
-        Alumno a1 = new Alumno("2","Luke","Skywalker","-", (byte)100, (byte)10, "ISC" );
-
-        if(alumnoDAO.editarAlumno(a1) == true){
-
-            System.out.println("Registro Modificado correctamente");
-
-        }else{
-
-            System.out.println("Error en la Modificacion");
-
-        }
-
-        //============ Prueba Consultas ==========
-
-        ArrayList<Alumno> lista = alumnoDAO.mostrarAlumnos("");
-
-        for(Alumno alumno: lista){
-
-            System.out.println(alumno);
-
-        }
 
         SwingUtilities.invokeLater(new Runnable() { //Siemnpre agregar ese codigo
 

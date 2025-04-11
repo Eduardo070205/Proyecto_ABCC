@@ -74,4 +74,53 @@ public class Elementos extends JFrame{
 
     }
 
+    public boolean validacion(JComponent... componente){
+
+        boolean cajas = false, combos = true;
+
+        for(JComponent c: componente){
+
+            if(c instanceof JTextField){
+
+
+                if(((JTextField) c).getText() == ""){
+
+                    cajas = false;
+
+                }else{
+
+                    cajas = true;
+
+                }
+
+            }
+
+            if( c instanceof JComboBox){
+
+                if(((JComboBox<?>) c).getSelectedIndex() == 0){
+
+                    combos = false;
+
+                }else{
+
+                    combos =  true;
+
+                }
+
+            }
+
+        }
+
+        if((cajas && combos)){
+
+            return true;
+
+        }else{
+
+            return false;
+
+        }
+
+    }
+
 }

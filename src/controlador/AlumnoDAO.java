@@ -44,7 +44,7 @@ public class AlumnoDAO {
     public boolean editarAlumno(Alumno alumno){
 
 
-        String sql = "UPDATE Alumnos SET Nombre='"+alumno.getNombre()+"', Primer_Ap='"+alumno.getPrimerAp()+"', Segundo_Ap='"+alumno.getSegundoAp()+"', Edad=50, Semestre="+alumno.getSemestre()+", Carrera='"+alumno.getCarrera()+"' WHERE Nun_Control = '"+alumno.getNumControl()+"'";
+        String sql = "UPDATE Alumnos SET Nombre='"+alumno.getNombre()+"', Primer_Ap='"+alumno.getPrimerAp()+"', Segundo_Ap='"+alumno.getSegundoAp()+"', Edad=0, Semestre="+alumno.getSemestre()+", Carrera='"+alumno.getCarrera()+"' WHERE Nun_Control = '"+alumno.getNumControl()+"'";
 
         return conexionBD.ejecutarInstruccionLMD(sql);
 

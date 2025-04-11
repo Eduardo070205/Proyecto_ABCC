@@ -88,6 +88,8 @@ public class VentanaConsultas extends Elementos implements ActionListener {
 
         btnBorrar = new JButton("Borrar");
 
+        btnBorrar.addActionListener(this);
+
         asignarPosicion(btnBorrar, 380, 200, 80, 20);
 
         radioNombre = new JRadioButton("Nombre");
@@ -180,6 +182,8 @@ public class VentanaConsultas extends Elementos implements ActionListener {
 
         btnCancelar = new JButton("Cancelar");
 
+        btnCancelar.addActionListener(this);
+
         asignarPosicion(btnCancelar, 380, 235, 90, 20);
 
         String[][] rowData = {{"1","1","1","1","1","1"}};
@@ -267,6 +271,18 @@ public class VentanaConsultas extends Elementos implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         Object componente = e.getSource();
+
+        if(componente == btnBorrar){
+
+            restablecer(cajaNombre, cajaApePat, cajApeMat, comboCarrera, comboSemestre);
+
+        }
+
+        if(componente == btnCancelar){
+
+            this.dispose();
+
+        }
 
         if(componente == btnLogo){
 

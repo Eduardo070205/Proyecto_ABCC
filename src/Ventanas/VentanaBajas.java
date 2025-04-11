@@ -117,7 +117,6 @@ public class VentanaBajas extends Elementos implements ActionListener {
 
         comboSemestre = new JComboBox<>();
 
-
         for(int i = 0; i < 10; i++){
 
             comboSemestre.addItem(String.valueOf(i+1));
@@ -156,6 +155,8 @@ public class VentanaBajas extends Elementos implements ActionListener {
 
         btnCancelar = new JButton("Cancelar");
 
+        btnCancelar.addActionListener(this);
+
         asignarPosicion(btnCancelar, 380, 235, 90, 20);
 
         String[][] rowData = {{"1","1","1","1","1","1"}};
@@ -193,20 +194,25 @@ public class VentanaBajas extends Elementos implements ActionListener {
 
         if(componente == btnEliminar){
 
+            int respuesta = JOptionPane.showConfirmDialog(this, "¿Estas seguro de eliminar el registro?");
 
-            if(alumnoDAO.eliminarAlumno(cajaNumControl.getText()) == true){
+            if(respuesta == JOptionPane.YES_OPTION){
 
-                actualizarTabla(tabla);
+                if(alumnoDAO.eliminarAlumno(cajaNumControl.getText()) == true){
 
-                System.out.println("Registro Modificado correctamente");
+                    actualizarTabla(tabla);
 
-                JOptionPane.showMessageDialog(this, "Registro eliminado con exito");
+                    System.out.println("Registro Modificado correctamente");
 
-            }else{
+                    JOptionPane.showMessageDialog(this, "Registro eliminado con exito");
 
-                System.out.println("Error en la Modificacion");
+                }else{
 
-                JOptionPane.showMessageDialog(this, "El registro no se pudo eliminar");
+                    System.out.println("Error en la Modificacion");
+
+                    JOptionPane.showMessageDialog(this, "El registro no se pudo eliminar");
+
+                }
 
             }
 
@@ -215,6 +221,12 @@ public class VentanaBajas extends Elementos implements ActionListener {
         if(componente == btnBorrar){
 
             restablecer(cajaNumControl,cajaNombre, cajaApePat, cajApeMat, comboCarrera, comboSemestre);
+
+        }
+
+        if(componente == btnCancelar){
+
+            this.dispose();
 
         }
 
