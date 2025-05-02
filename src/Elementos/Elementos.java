@@ -45,7 +45,6 @@ public class Elementos extends JFrame{
     }
 
 
-
     public void restablecer(JComponent... componentes) {
 
         //En java

@@ -1,0 +1,1 @@
+Mi campo de numero de contro en la base de datos se llama Nun_Control, es lo unico diferente 

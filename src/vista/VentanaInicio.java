@@ -24,7 +24,6 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
 
     JMenuItem altas, bajas, cambios, consultas;
 
-
     public VentanaInicio() {
 
         getContentPane().setLayout(new BorderLayout());;
@@ -81,7 +80,6 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
 
         menuAlumnos.add(consultas);
 
-
         menuBar.add(menuAlumnos);
 
         menuAsignaturas = new JMenu("Asignaturas");
@@ -89,8 +87,6 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
         menuBar.add(menuAsignaturas);
 
         setJMenuBar(menuBar);
-
-
 
 
     }
@@ -208,6 +204,5 @@ public class VentanaInicio extends JFrame implements ActionListener, KeyListener
         }
 
     }
-
 
 }
